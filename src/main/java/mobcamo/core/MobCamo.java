@@ -1,9 +1,15 @@
 package mobcamo.core;
 
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Logger;
+import mobcamo.ai.CamoAIUtils;
+import mobcamo.handlers.CamoCraftingHandler;
 import mobcamo.handlers.ConfigHandler;
+import mobcamo.handlers.MainEventHandler;
 import mobcamo.handlers.RegistryHandler;
 import mobcamo.proxy.CommonProxy;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -35,6 +41,15 @@ public class MobCamo
 	{
 		RegistryHandler.RegisterItems();
 		RegistryHandler.RegisterRecipes();
+		CamoAIUtils.SetupCamoMap();
+		
+		MainEventHandler handler = new MainEventHandler();
+		MinecraftForge.EVENT_BUS.register(handler);
+		FMLCommonHandler.instance().bus().register(handler);
+		
+		CamoCraftingHandler tmp = new CamoCraftingHandler();
+		CraftingManager.getInstance().getRecipeList().add(tmp);
+		FMLCommonHandler.instance().bus().register(tmp);
 	}
 	
 	@EventHandler
